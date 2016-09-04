@@ -29,9 +29,20 @@ var leaderRouter = require('./routes/leaderRouter');
 var favoriteRouter = require('./routes/favoriteRouter');
 var sprintRouter = require('./routes/sprintRouter');
 var storyRouter = require('./routes/storyRouter');
+var validationRouter = require('./routes/validationRouter');
+
 
 
 var app = express();
+
+/* check if the application runs on heroku */
+var util;
+
+if(process.env.DYNO){
+  util = require("./util-pg.js")
+} else {
+  util = require("./util-file.js")
+}
 
 // Secure traffic only
 //app.all('*', function(req, res, next){
@@ -77,6 +88,7 @@ app.use('/dishes',dishRouter);
 app.use('/promotions',promoRouter);
 app.use('/leadership',leaderRouter);
 app.use('/favorites',favoriteRouter);
+app.use('/api/setup/validate',validationRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
