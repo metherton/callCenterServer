@@ -13,7 +13,7 @@ describe('Controller: AgentController', function() {
 
         mockTwilioWorkerFactory = {};
 
-        $httpBackend.expectGET('http://localhost:3001/api/agents/session').respond({configuration: 'myconfig', tokens: {}});
+        $httpBackend.expectGET('http://localhost:3001/api/agents/session').respond({configuration: 'myconfig', tokens: {}}  );
 
         AgentController = $controller('AgentController', {
             sessionFactory: sessionFactory,

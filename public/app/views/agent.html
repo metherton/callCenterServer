@@ -2,6 +2,14 @@
     <div class="row row-content">
         <div class="col-xs-12 col-sm-8">
             <h2>Agent Screen</h2>
+            bla
+            res{{vm.reservation}} task{{vm.task}}
+            <div class="panel panel-default" ng-show="vm.reservation == null && vm.task == null">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Waiting for new task ...</h4>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
