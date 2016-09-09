@@ -1,4 +1,6 @@
 var express = require('express');
+var sessions = require('express-session');
+var compression   = require('compression');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -30,8 +32,8 @@ var favoriteRouter = require('./routes/favoriteRouter');
 var sprintRouter = require('./routes/sprintRouter');
 var storyRouter = require('./routes/storyRouter');
 var validationRouter = require('./routes/validationRouter');
-
-
+var loginRouter = require('./routes/loginRouter');
+var sessionRouter = require('./routes/sessionRouter');
 
 var app = express();
 
@@ -69,16 +71,32 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
 app.use(logger('dev'));
+app.use(compression());
+app.use(sessions({resave: true, saveUninitialized: false, secret: 'keyboard cat', name: 'session',  cookie: {expires: util.generateSessionExirationDate() }}))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(function (req, res, next) {
+  util.getConfiguration(function(error, configuration){
+    if(error){
+      res.status(500).json({stack: error.stack, message: error.message })
+    } else {
+      req.configuration = configuration;
+      next();
+    }
+  })
+})
+
+
 
 // passport config
 
 app.use(passport.initialize());
 
+//app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public/dist')));
 
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/api/users', users);
@@ -89,6 +107,8 @@ app.use('/promotions',promoRouter);
 app.use('/leadership',leaderRouter);
 app.use('/favorites',favoriteRouter);
 app.use('/api/setup/validate',validationRouter);
+app.use('/api/agents/login',loginRouter);
+app.use('/api/agents/session',sessionRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

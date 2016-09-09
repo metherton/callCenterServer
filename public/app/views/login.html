@@ -1,0 +1,27 @@
+
+    <div class="container" ng-controller="LoginController">
+        <div class="row row-content">
+            <div class="col-xs-12">
+                <h1>Welcome Agent</h1>
+            </div>
+            <div class="col-xs-12">
+                <h4>Please login with your Agent Name</h4>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <form class="form-horizontal" name="loginForm" ng-submit="vm.doLogin()" novalidate>
+                    <div class="form-group" ng-class="{ 'has-error' : feedbackForm.firstName.$error.required && !feedbackForm.firstName.$pristine }">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="friendlyName" name="friendlyName" placeholder="Name"
+                                   ng-model="vm.loginDetails.worker.friendlyName" required>
+                            <span ng-show="feedbackForm.firstName.$error.required && !feedbackForm.firstName.$pristine" class="help-block">Your First name is required.</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary" ng-disabled="feedbackForm.$invalid">Login</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>

@@ -349,7 +349,7 @@ module.exports.getActivities = function (req, res) {
 
 }
 
-module.exports.validate = function (req, res) {
+module.exports.validate = function (req, res, next) {
 
     if (!process.env.TWILIO_ACCOUNT_SID || process.env.TWILIO_ACCOUNT_SID.length !== 34) {
         res.status(500).json({ code: 'TWILIO_ACCOUNT_SID_INVALID'})

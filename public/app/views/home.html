@@ -1,0 +1,5 @@
+<div class="container" ng-controller="IndexController">
+    <i ng-show="vm.isValidating()" class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+    <div ng-show="vm.hasValidSetup()" class="alert alert-success" role="alert">Congratulations you are ready to use Twilio</div>
+    <div ng-show="!vm.isValidating() && !vm.hasValidSetup()" class="alert alert-danger" role="alert">There was a problem setting up Twilio</div>
+</div>
