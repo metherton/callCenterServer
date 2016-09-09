@@ -2,8 +2,26 @@
     <div class="row row-content">
         <div class="col-xs-12 col-sm-8">
             <h2>Agent Screen</h2>
-            bla
-            res{{vm.reservation}} task{{vm.task}}
+
+            <div class="panel panel-default agent-reservation" ng-show="vm.reservation != null">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Reservation</h3>
+                </div>
+                <div class="panel-body">
+
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="title">{{vm.reservation.task.attributes.type}} from {{vm.reservation.task.attributes.name}}</div>
+                                <div class="timer">created {{ vm.reservationCounter | vm.counter }} ago</div>
+                            </td>
+                            <td class="accept-panel"><button ng-click="vm.acceptReservation(vm.reservation)">Accept</button></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+
             <div class="panel panel-default" ng-show="vm.reservation == null && vm.task == null">
                 <div class="panel-heading">
                     <h4 class="panel-title">Waiting for new task ...</h4>

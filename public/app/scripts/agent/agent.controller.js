@@ -102,5 +102,111 @@ angular.module('callCenterApp')
         });
     }
 
+    vm.acceptReservation = function (reservation) {
+
+        $log.log('accept reservation with TaskRouter Worker JavaScript SDK');
+
+        /* depending on the typ of taks that was created we handle the reservation differently */
+        if(reservation.task.attributes.channel == 'chat'){
+
+            reservation.accept(
+
+                function(err, reservation) {
+
+                    if(err) {
+                        $log.error(err);
+                        return;
+                    }
+
+                    $scope.$broadcast('ActivateChat', { channelSid: reservation.task.attributes.channelSid });
+
+                });
+
+        }
+
+        if(reservation.task.attributes.channel == 'phone' && reservation.task.attributes.type == 'Inbound call'){
+
+            $log.log('dequeue reservation with  callerId: ' + vm.configuration.twilio.callerId);
+            reservation.dequeue(vm.configuration.twilio.callerId);
+
+        }
+
+        /* we accept the reservation and initiate a call to the customer's phone number */
+        if(reservation.task.attributes.channel == 'phone' && reservation.task.attributes.type == 'Callback request'){
+
+            reservation.accept(
+
+                function(err, reservation) {
+
+                    if(err) {
+                        $log.error(err);
+                        return;
+                    }
+
+                    $scope.$broadcast('CallPhoneNumber', { phoneNumber: reservation.task.attributes.phone });
+
+                }
+            );
+        }
+    };
+
+    vm.complete = function (reservation) {
+
+        if(vm.task.attributes.channel == 'chat'){
+            $scope.$broadcast('DestroyChat');
+        }
+
+        vm.workerJS.update('ActivitySid', vm.configuration.twilio.workerIdleActivitySid, function(err, worker) {
+
+            if(err) {
+                $log.error(err);
+                return;
+            }
+
+            vm.reservation = null;
+            vm.task = null;
+            $scope.$apply();
+
+        });
+
+    };
+
+    vm.logout = function () {
+
+        $http.post('/api/agents/logout')
+
+            .then(function onSuccess(response) {
+
+                window.location.replace('/callcenter/index.html');
+
+            }, function onError(response) {
+
+                $log.error(response);
+
+            });
+
+    };
+
+    vm.startReservationCounter = function() {
+
+        $log.log('start reservation counter');
+        vm.reservationCounter = vm.reservation.task.age;
+
+        vm.reservationInterval = $interval(function() {
+            vm.reservationCounter++;
+        }, 1000);
+
+    };
+
+    vm.stopReservationCounter = function() {
+
+        if (angular.isDefined(vm.reservationInterval)) {
+            $interval.cancel(vm.reservationInterval);
+            vm.reservationInterval = undefined;
+        }
+
+    };
+
+
 
 }]);
